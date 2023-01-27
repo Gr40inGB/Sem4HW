@@ -2,35 +2,91 @@
 // 1, 2, 5, 7, 19 -> [1, 2, 5, 7, 19]
 // 6, 1, 33 -> [6, 1, 33]
 
+//using System.Globalization;
+
+
+
 void Root()
 {
     Console.Clear();
     System.Console.Write("Программа поместит в массив 8 первых целых чисел найденных в введённой строке .\nВведите строку: ");
     string inputString = Console.ReadLine();
-    long[] NumberArray = GetArrayFirst8Number(inputString);
-    System.Console.WriteLine(string.Join(", ", NumberArray));
+    string[] StringNumberArray = GetArrayFirst8Number(inputString);
+    PrintArray(StringNumberArray);
 
-    // System.Console.WriteLine($"Сумма цифр в числе {inputNumber} равна {SummInNumber(inputNumber)}");
 }
 
-long[] GetArrayFirst8Number(string stringToArray)
+void PrintArray(string[] ArrayToPrint)
 {
-    long[] ArrayFirst8Number = new long[8];
-    string tempNumberString = "";
-    int[] ItIsNumbersIndexArray = null;
-
-    for (int i = 0; i < stringToArray.Length; i++)
+    System.Console.Write("[");
+    for (int i = 0; i < ArrayToPrint.Length; i++)
     {
-        if (Char.IsNumber(stringToArray[i]))
+        if (ArrayToPrint[i] == null)
         {
-            tempNumberString += stringToArray[i];
+            System.Console.Write("0");
         }
         else
         {
-            ArrayFirst8Number.Append(Convert.ToInt32(tempNumberString));
-            tempNumberString = "";
+            System.Console.Write(ArrayToPrint[i]);
+        }
+        if (i < ArrayToPrint.Length - 1)
+        {
+            System.Console.Write(", ");
         }
     }
+    System.Console.Write("]");
+
+}
+
+
+void ErrorText(int countFind)
+{
+    System.Console.WriteLine($"Количество найденных чисел {countFind + 1}, остальное будет заполнено нулями");
+}
+
+string[] GetArrayFirst8Number(string stringToArray)
+{
+    string[] ArrayFirst8Number = new string[8];
+    int countArray = 0;
+    string tempNumberString = null;     // для конкатенации найденного числа
+
+    for (int i = 0; i < stringToArray.Length; i++)
+    {
+        if (countArray < ArrayFirst8Number.Length)
+        {
+            if (Char.IsNumber(stringToArray[i]))
+            {
+                tempNumberString += stringToArray[i];
+                if (i == stringToArray.Length - 1)   // если мы достигли конца текста и больше не встретим других знаков -
+                {                                    // то нужно записать в наш массив текущее число в tempNumberString  - иначе потеряется
+                    ArrayFirst8Number[countArray] = tempNumberString;
+                }
+            }
+            else
+            {
+                if (tempNumberString == null)  // почему-то не работает   if (!(tempNumberString == null))   - поэтому обрабюатываю в else
+                {
+                }
+                else
+                {
+                    ArrayFirst8Number[countArray] = tempNumberString;
+                    tempNumberString = null;
+                    countArray++;
+
+                    if (countArray == 8)           // если мы уже нашли достаточно чисел - выходим 
+                    {
+                        return ArrayFirst8Number;
+                    }
+                }
+            }
+        }
+
+        if (i == stringToArray.Length - 1 && countArray < 7)
+        {
+            ErrorText(countArray);   /// если чисел недостаочно 
+        }
+    }
+
     return ArrayFirst8Number;
 }
 
